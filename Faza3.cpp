@@ -41,7 +41,7 @@ public:
 		suprafata = c.suprafata;
 		nrContinenteVecine = c.nrContinenteVecine;
 		denumire = c.denumire;
-		this->denumire = new char[strlen(c.denumire + 1)];
+		this->denumire = new char[strlen(c.denumire) + 1];
 		strcpy_s(this->denumire, strlen(c.denumire) + 1, c.denumire);
 	}
 
@@ -148,6 +148,25 @@ public:
 		return con;
 	}
 
+	friend istream& operator>>(istream& citire, Continent& c)
+	{
+		char aux[15];
+		cout << "Numele continentului: ";
+		citire >> aux;
+		if (c.denumire != NULL)
+			delete[]c.denumire;
+		c.denumire = new char[strlen(aux) + 1, aux];
+		strcpy_s(c.denumire, strlen(aux) + 1, aux);
+		cout << endl;
+		cout << "Suprafata continentului: ";
+		citire >> c.suprafata;
+		cout << endl;
+		cout << "Cate continente vecine are? ";
+		citire >> c.nrContinenteVecine;
+		cout << endl;
+
+		return citire;
+	}
 
 };
 
@@ -203,7 +222,7 @@ public:
 	{
 		localizare = v.localizare;
 		altitudine = v.altitudine;
-		this->nume = new char[strlen(v.nume + 1)];
+		this->nume = new char[strlen(v.nume) + 1];
 		strcpy_s(this->nume, strlen(v.nume) + 1, v.nume);
 	}
 
@@ -232,7 +251,7 @@ public:
 		this->localizare = localizare;
 	}
 
-	void setNume(const char* nume) 
+	void setNume(const char* nume)
 	{
 		if (this->nume != NULL)
 		{
@@ -316,6 +335,25 @@ public:
 		return vul;
 	}
 
+	friend istream& operator>>(istream& citire, Vulcan& v)
+	{
+		char aux[15];
+		cout << "Numele vulcanului: ";
+		citire >> aux;
+		if (v.nume != NULL)
+			delete[]v.nume;
+		v.nume = new char[strlen(aux) + 1];
+		strcpy_s(v.nume, strlen(aux) + 1, aux);
+		cout << endl;
+		cout << "Altitudinea vulcanului: ";
+		citire >> v.altitudine;
+		cout << endl;
+		cout << "Vulcanul se afla in ocean (0) sau pe uscat(1)? ";
+		citire >> v.localizare;
+
+		return citire;
+	}
+
 
 };
 
@@ -372,7 +410,7 @@ public:
 		nume = t.nume;
 		nrJudete = t.nrJudete;
 		iesireMare = t.iesireMare;
-		this->capitala = new char[strlen(t.capitala + 1)];
+		this->capitala = new char[strlen(t.capitala) + 1];
 		strcpy_s(this->capitala, strlen(t.capitala + 1), t.capitala);
 	}
 
@@ -458,7 +496,7 @@ public:
 			this->capitala = new char[strlen(t.capitala) + 1];
 			strcpy_s(this->capitala, strlen(t.capitala) + 1, t.capitala);
 		}
-		
+
 		return *this;
 	}
 
@@ -496,12 +534,44 @@ public:
 		this->nrJudete += 5;
 		return copie;
 	}
+
+	friend istream& operator>>(istream& citire, Tara& t)
+	{
+		cout << "Numele tarii: ";
+		citire >> t.nume;
+		cout << endl;
+		cout << "Numarul de judete: ";
+		citire >> t.nrJudete;
+		cout << "Are iesire la mare? 0-NU, 1-DA ";
+		citire >> t.iesireMare;
+		char aux[15];
+		cout << "Capitala tarii: ";
+		citire >> aux;
+		if (t.capitala != NULL)
+			delete[]t.capitala;
+		t.capitala = new char[strlen(aux) + 1];
+		strcpy_s(t.capitala, strlen(aux) + 1, aux);
+
+		return citire;
+	}
+
+	friend ostream& operator<<(ostream& afisare, const Tara& t)
+	{
+		afisare << "Numele tarii: " << t.nume << endl;
+		afisare << "Numarul de judete: " << t.nrJudete << endl;
+		afisare << (t.iesireMare ? "Are iesire la mare." : "Nu are iesire la mare.") << endl;
+		afisare << "Capitala tarii: ";
+		for (int i = 0; i < strlen(t.capitala); i++)
+			afisare << t.capitala[i];
+
+		return afisare;
+	}
 };
 
 string Tara::oAltaLimbaVorbita = "limba engleza";
 
 
-void main()
+int main()
 {
 	Continent c;
 	c.afisare();
@@ -509,7 +579,7 @@ void main()
 	c1.afisare();
 	Continent c2(48, 1, 44579000);
 	c2.afisare();
-	//esteAsia(c2);
+	esteAsia(c2);
 	cout << c.getSuprafata() << endl;
 	cout << c1.getContinenteVecine() << endl;
 	cout << c2.getDenumire() << endl;
@@ -520,12 +590,20 @@ void main()
 	c.afisare();
 
 
-	//Continent c3 = c + c1;
-	//c3.afisare();
+	Continent c3 = c + c1;
+	c3.afisare();
 
-	//Continent c3;
-	//c3 = c / c1;
-	//c3.afisare();
+	Continent c3;
+	c3 = c / c1;
+	c3.afisare();
+
+	Continent* v_continent = new Continent[2];
+	Continent c4;
+	cin >> c4;
+	Continent c5;
+	cin >> c5;
+	v_continent[0] = c4;
+	v_continent[1] = c5;
 
 
 	Vulcan vulcan;
@@ -534,7 +612,7 @@ void main()
 	v.afisare();
 	Vulcan V(976);
 	V.afisare();
-	//modificareAltitudine(vulcan, 5000);
+	modificareAltitudine(vulcan, 5000);
 	cout << v.getNume() << endl;
 	cout << v.getActivitate() << endl;
 	cout << v.getAltitudine() << endl;
@@ -546,6 +624,13 @@ void main()
 	V.setNume("Vezuviu");
 	V.afisare();
 
+	Vulcan* v_vulcan = new Vulcan[2];
+	Vulcan v1;
+	cin >> v1;
+	Vulcan v2;
+	cin >> v2;
+	v_vulcan[0] = v1;
+	v_vulcan[1] = v2;
 
 	Tara tara;
 	tara.afisare();
@@ -565,4 +650,24 @@ void main()
 	tara.setNrJudete(54);
 	tara.setNume("Finlanda");
 	tara.afisare();
+
+	Tara* v_tara = new Tara[2];
+	Tara t1;
+	cin >> t1;
+	Tara t2;
+	cin >> t2;
+	v_tara[0] = t1;
+	v_tara[1] = t2;
+
+	Tara** pp_tara = new Tara * [2];
+	for (int i = 0; i < 2; i++)
+		pp_tara[i] = new Tara[2];
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < 2; j++)
+			cin >> pp_tara[i][j];
+	for (int i = 0; i < 2; i++)
+		for (int j = 0; j < 2; j++)
+			cout << pp_tara[i][j];
+
+
 }
