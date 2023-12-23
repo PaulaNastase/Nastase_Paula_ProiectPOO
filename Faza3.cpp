@@ -570,6 +570,136 @@ public:
 
 string Tara::oAltaLimbaVorbita = "limba engleza";
 
+class Emisfera
+{
+private:
+	int nrTari;
+	Tara* tari;
+	string tipEmisfera;
+	int nrOceane;
+
+public:
+	Emisfera()
+	{
+		this->tipEmisfera = "Nordica";
+		this->nrOceane = 3;
+	}
+
+	Emisfera(string tipEmisfera, int nrOceane)
+	{
+		this->tipEmisfera = tipEmisfera;
+		this->nrOceane = nrOceane;
+		this->tara = tara;
+	}
+
+	Emisfera(const Emisfera& e)
+	{
+		this->tipEmisfera = e.tipEmisfera;
+		this->nrOceane = e.nrOceane;
+
+	}
+
+	int getNrTari()
+	{
+		return this->nrTari;
+	}
+
+	Tara* getTari()
+	{
+		return this->tari;
+	}
+
+	Tara getTara(int index)
+	{
+		return this->tari[index];
+	}
+
+	string getTipEmisfera()
+	{
+		return this->tipEmisfera;
+	}
+
+	int getNrOceane()
+	{
+		return this->nrOceane;
+	}
+
+	void setNrTari(int nrTari)
+	{
+		this->nrTari = nrTari;
+	}
+
+	void setNrOceane(int nrOceane)
+	{
+		this->nrOceane = nrOceane;
+	}
+
+	void setTipEmisfera(string tipEmisfera)
+	{
+		if (tipEmisfera.length() > 3)
+		{
+			this->tipEmisfera = tipEmisfera;
+		}
+	}
+
+	void setTari(int nrTari, Tara* Tari)
+	{
+		if (nrTari > 0)
+		{
+			this->nrTari = nrTari;
+			if (this->tari != NULL)
+			{
+				delete[]this->tari;
+			}
+			this->tari = new int[nrTari];
+			for (int i = 0; i < nrTari; i++)
+				this->tari[i] = Tari[i];
+		}
+	}
+
+
+
+
+
+	Tara& operator[](int index) {
+	if (index >= 0 && index < this->nrTari)
+	{
+		return this->tari[index];
+	}
+
+	Emisfera operator=(Emisfera & e)
+	{
+		if (this != &e)
+		{
+			if (this->nrTari != NULL)
+				delete[]this->nrTari;
+			this->nrTari = e.nrTari;
+			this->nrOceane = e.nrOceane;
+			this->tipEmisfera = e.tipEmisfera;
+			if (this->nrTari != 0)
+			{
+				this->tari = new int[this->nrTari];
+				for (int i = 0; i < this->nrTari; i++)
+					this->tari[i] = e.tari[i];
+			}
+			else this->tari = NULL;
+		}
+	}
+
+	~Emisfera()
+	{
+		if (this->tari != NULL)
+			delete[]this->tari;
+	}
+
+	friend ostream& operator<<(ofstream& afisare, const Emisfera& e)
+	{
+
+	}
+
+
+
+};
 
 int main()
 {
