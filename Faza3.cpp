@@ -168,6 +168,36 @@ public:
 		return citire;
 	}
 
+	friend ifstream& operator>>(ifstream& file, Continent& c)
+	{
+		char aux[15];
+		file >> aux;
+		if (c.denumire != NULL)
+			delete[]c.denumire;
+		c.denumire = new char[strlen(aux) + 1, aux];
+		strcpy_s(c.denumire, strlen(aux) + 1, aux);
+		file >> c.suprafata;
+		file >> c.nrContinenteVecine;
+
+		return file;
+	}
+
+	friend ofstream& operator<<(ofstream& console, Continent c)
+	{
+		int l;
+		l = strlen[c.denumire + 1];
+		if (l != NULL)
+		{
+			for (int i = 0; i < l; i++)
+			{
+				console << c.denumire[i];
+			}
+		}
+		console << c.suprafata << " " << c.nrContinenteVecine << endl;
+
+		return console;
+	}
+
 };
 
 int Continent::nrContinente = 7;
@@ -310,23 +340,6 @@ public:
 		return vul;
 	}
 
-	friend istream& operator>>(istream& citire, Vulcan vulcan)
-	{
-		char aux[100];
-		cout << "Numele vulcanului: ";
-		citire >> aux;
-		if (vulcan.nume != NULL)
-			delete[]vulcan.nume;
-		vulcan.nume = new char[strlen(aux) + 1];
-		strcpy_s(vulcan.nume, strlen(aux) + 1, aux);
-		if (vulcan.localizare == true)
-			cout << "Se afla in ocean." << endl;
-		else
-			cout << "Se afla pe uscat." << endl;
-		cout << "Altitudine: ";
-		citire >> vulcan.altitudine;
-	}
-
 	Vulcan operator+=(const Vulcan& v)
 	{
 		Vulcan vul = *this;
@@ -354,7 +367,38 @@ public:
 		return citire;
 	}
 
+	friend ifstream& operator>>(ifstream& fis, Vulcan& v)
+	{
+		char aux[15];
+		fis >> aux;
+		if (v.nume != NULL)
+		{
+			delete[]v.nume;
+		}
+		v.nume = new char[strlen(aux) + 1];
+		strcpy_s(v.nume, strlen(aux) + 1, aux);
+		fis >> v.altitudine;
+		fis >> v.localizare;
 
+		return fis;
+	}
+
+	friend ofstream& operator<<(ofstream& ecran, Vulcan v)
+	{
+		int l;
+		l = strlen[v.nume + 1];
+		if (l!= NULL)
+		{
+			for (int i = 0; i < l; i++)
+			{
+				ecran << v.nume[i];
+			}
+		}
+		ecran << v.altitudine << " " << v.localizare;
+
+		ecran << endl;
+		return ecran;
+	}
 };
 
 int  Vulcan::gradEruptie = 2;
@@ -566,6 +610,43 @@ public:
 
 		return afisare;
 	}
+
+	void CitireDinFisBinar(fstream& f)
+	{
+		int lungime;
+		f.read((char*)&lungime, sizeof(int));
+		if (this->nume != NULL)
+		{
+			delete[]this->nume;
+		}
+		this->nume = char[lungime + 1];
+		for (int i = 0; i < lungime; i++)
+		{
+			f.read((char*)&this->nume[i], sizeof(char));
+		}
+		this->nume[lungime] = '\0';
+		f.read((char*)&this->nrJudete, sizeof(int));
+		f.read((char*)&this->iesireMare, sizeof(bool));
+		int l;
+		f.read((char*)&l, sizeof(int));
+		char* this->capitala = new char[l];
+		f.read(this->capitala, l);
+	}
+
+	void ScriereInFisBinar(fstream& f)
+	{
+		int lungime = strlen(this->nume);
+		f.write((char*)&lungime, sizeof(int));
+		for (int i = 0; i < lungime; i++)
+		{
+			f.write((char*)&this->nume[i], sizeof(char));
+		}
+		f.write((char*)&this->nrJudete, sizeof(int));
+		f.write((char*)&this->iesireMare, sizeof(bool));
+		int l = strlen(capitala) + 1;
+		f.write((char*)&l, sizeof(int));
+		f.write(this->capitala, l);
+	}
 };
 
 string Tara::oAltaLimbaVorbita = "limba engleza";
@@ -583,20 +664,40 @@ public:
 	{
 		this->tipEmisfera = "Nordica";
 		this->nrOceane = 3;
+		this->nrTari = 4;
+		Tara* tari = new Tara[nrTari];
 	}
 
-	Emisfera(string tipEmisfera, int nrOceane)
+	Emisfera(string tipEmisfera, int nrOceane, int nrTari): nrTari(nrTari)
 	{
 		this->tipEmisfera = tipEmisfera;
 		this->nrOceane = nrOceane;
-		this->tara = tara;
+		if (this->nrTari != NULL)
+		{
+			this->tari = new Tara[nrTari];
+			for (int i = 0; i < nrTari; i++)
+			{
+				this->nrTari[i] = nrTari[i];
+			}
+		}
+		else
+			this->tari = NULL;
 	}
 
 	Emisfera(const Emisfera& e)
 	{
 		this->tipEmisfera = e.tipEmisfera;
 		this->nrOceane = e.nrOceane;
-
+		if (nrTari != 0)
+		{
+			this->tari = new Tara[nrTari];
+			for (int i = 0; i < nrTari; i++)
+			{
+				this->tari[i] = e.tari[i];
+			}
+		}
+		else
+			this->tari = NULL;
 	}
 
 	int getNrTari()
@@ -657,10 +758,6 @@ public:
 		}
 	}
 
-
-
-
-
 	Tara& operator[](int index) {
 	if (index >= 0 && index < this->nrTari)
 	{
@@ -694,11 +791,51 @@ public:
 
 	friend ostream& operator<<(ofstream& afisare, const Emisfera& e)
 	{
+		afisare << "Emisfera " << e.getTipEmisfera() << " are " << e.getNrOceane() << " oceane si " << e.getNrTari() << " tari: " << endl;
+		if (e.nrTari != NULL)
+		{
+			for (int i = 0; i < e.nrTari; i++)
+			{
+				afisare << e.tari[i] < ", ";
+			}
+		}
+		else afisare << " - ";
 
+		afisare << endl;
+		return afisare;
 	}
 
+	void citireDinFisBinar(fstream& f)
+	{
+		f.read((char*)&nrTari, sizeof(int));
+		f.read((char*)&nrOceane, sizeof(int));
+		int lungime;
+		f.read((char*)&lungime, sizeof(int));
+		if (this->tipEmisfera != NULL)
+		{
+			delete[]this->tipEmisfera;
+		}
+		this->tipEmisfera = new char[lungime + 1];
+		for (int i = 0; i < lungime; i++)
+		{
+			f.read((char*)&this->tipEmisfera[i], sizeof(char));
+		}
+		this->tipEmisfera[lungime] = '\0';
+	}
 
-
+	void scriereInFisBinar(fstream& f)
+	{
+		f.write((char*)&nrTari, sizeof(int));
+		f.write((char*)&nrOceane, sizeof(int));
+		int lungime = strlen(this->tipEmisfera);
+		f.write((char*)&lungime, sizeof(int));
+		for (int i = 0; i < lungime; i++)
+		{
+			f.write((char*)&this->tipEmisfera[i], sizeof(char));
+		}
+		//f.write((char*)&tari, sizeof(Tara)); GASESTE O METODA DE A SCRIE UN VECTOR DE OBIECTE INTR-UN FISIER BINAR
+		//TREBUIE SCRIS CEVA SI IN MAIN?
+	}
 };
 
 int main()
