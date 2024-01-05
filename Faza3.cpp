@@ -1175,6 +1175,15 @@ int main()
 	ta.setLuni(4);
 	ta.setNrJudete(15);
 	ta.setTemperaturaMedieLunara(3, temperaturi);
-	
 
+	VulcanInactiv vi;
+	VulcanInactiv VI(false, 5000, "Rusia");
+	vi = VI;
+	cout << vi.getRiscSeismic() << endl;
+	cout << vi.getTara() << endl;
+	cout << vi.getUltimaEruptie() << endl;
+
+	vi.setRiscSeismic(true);
+	vi.setNouaEruptie(100);
+	vi.setTara("Japonia";)
 }
