@@ -410,6 +410,100 @@ int modificareAltitudine(Vulcan v, int altNoua)
 	return v.altitudine;
 }
 
+class VulcanInactiv : public Vulcan
+{
+private:
+	bool riscSeismic;
+	int ultimaEruptie;
+	char* tara;
+
+public:
+
+	VulcanInactiv() : Vulcan(4169)
+	{
+		this->riscSeismic = false;
+		this->ultimaEruptie = 1000;
+		this->tara = new char[strlen("SUA") + 1];
+		strcpy_s(this->tara, strlen("SUA") + 1, "SUA");
+	}
+
+	VulcanInactiv(bool riscSeismic, int ultimaEruptie, char* tara) : Vulcan(2300)
+	{
+		this->riscSeismic = riscSeismic;
+		this->ultimaEruptie = ultimaEruptie;
+		this->tara = new char[strlen(tara) + 1];
+		strcpy_s(this->tara, strlen(tara) + 1, tara);
+	}
+
+	VulcanInacitv(const VulcanInactiv& v) : Vulcan(v)
+	{
+		this->riscSeismic = v.riscSeismic;
+		this->ultimaEruptie = v.ultimaEruptie;
+		this->tara = new char[strlen(v.tara) + 1];
+		strcpy_s(this->tara, strlen(v.tara) + 1, v.tara);
+	}
+
+	~VulcanInactiv()
+	{
+		if (this->tara != NULL)
+		{
+			delete[]this->tara;
+		}
+	}
+
+	VulcanInactiv operator=(const VulcanInactiv& v)
+	{
+		if (this != &v)
+		{
+			Vulcan::operator=(v);
+			this->riscSeismic = v.riscSeismic;
+			this->ultimaEruptie = v.ultimaEruptie;
+			if (this->tara != NULL)
+			{
+				delete[]this->tara;
+			}
+			this->tara = new char[strlen(v.tara) + 1];
+			strcpy_s(this->tara, strlen(v.tara) + 1, v.tara);
+		}
+		return *this;
+	}
+
+	bool getRiscSeismic()
+	{
+		return this->riscSeismic;
+	}
+
+	int getUltimaEruptie()
+	{
+		return this->ultimaEruptie;
+	}
+
+	char* getTara()
+	{
+		return this->tara;
+	}
+
+	void setRiscSeismic(bool riscNou)
+	{
+		this->riscSeismic = riscNou;
+	}
+
+	void setNouaEruptie(int perioadaNoua)
+	{
+		this->ultimaEruptie = perioadaNoua;
+	}
+
+	void setTara(const char* taraNoua)
+	{
+		if (this->tara != NULL)
+		{
+			delete[]this->tara;
+		}
+		this->tara = new char[strlen(taraNoua) + 1];
+		strcpy_s(this->tara, strlen(taraNoua) + 1, taraNoua);
+	}
+}
+
 class Tara
 {
 private:
@@ -651,6 +745,135 @@ public:
 
 string Tara::oAltaLimbaVorbita = "limba engleza";
 
+class TaraPeninsulara : public Tara
+{
+private:
+	int tariVecine;
+	int luni;
+	float* temperaturaMedieLunara;
+
+public:
+	TaraPeninsulara() : Tara("Norvegia", 385207, 18)
+	{
+		this->tariVecine = 3;
+		this->luni = 12;
+		this->temperaturaMedieLunara = new float[this->luni];
+		for (int i = 0; i < this->luni; i++)
+		{
+			this->temperaturaMedieLunara = 0;
+		}
+	}
+
+	TaraPeninsulara(string nume, int tariVecine, int nrJudete, int suprafata, int luni) : Tara(nrJudete, suprafata)
+	{
+		this->nume = nume;
+		this->tariVecine = tariVecine;
+		this->luni = luni;
+		if (luni != 0)
+		{
+			this->temperaturaMedieLunara = new float[luni];
+			for (int i = 0; i < luni; i++)
+			{
+				this->temperaturaMedieLunara[i] = i + 2;
+			}
+		}
+		else
+			this->temperaturaMedieLunara = NULL;
+	}
+	
+	~TaraPeninsulara()
+	{
+		if (this->temperaturaMedieLunara != NULL)
+		{
+			delete[]this->temperaturaMedieLunara;
+		}
+	}
+
+	TaraPeninsulara(const TaraPeninsulara& t) : Tara(t)
+	{
+		this->tariVecine = t.tariVecine;
+		this->luni = t.luni;
+		this->temperaturaMedieLunara = new float[this->luni];
+		for (int i = 0; i < this->luni; i++)
+		{
+			this->temperaturaMedieLunara[i] = t.temperaturaMedieLunara[i];
+		}
+	}
+
+	TaraPeninsulara operator=(const TaraPeninsulara& t)
+	{
+		if (this != &t)
+		{
+			Tara::operator=(t);
+			this->tariVecine = t.tariVecine;
+			this->luni = t.luni;
+			if (this->temperaturaMedieLunara != NULL)
+			{
+				delete[]this->temperaturaMedieLunara;
+			}
+			if (this->luni != 0)
+			{
+				this->temperaturaMedieLunara = new float[this->luni];
+				for (int i = 0; i < this->luni; i++)
+				{
+					this->temperaturaMedieLunara[i] = t.temperaturaMedieLunara[i];
+				}
+			}
+			else
+				this->temperaturaMedieLunara = NULL;
+		}
+		return *this;
+	}
+
+	int getTariVecine()
+	{
+		return this->tariVecine;
+	}
+
+	int getLuni()
+	{
+		return this->luni;
+	}
+
+	float getTemperatura(int index)
+	{
+		return this->temperaturaMedieLunara[index];
+	}
+
+	float* getTemperaturaMedieLunara()
+	{
+		return this->temperaturaMedieLunara;
+	}
+
+	void setTariVecine(int tariNoiVecine)
+	{
+		this->tariVecine = tariNoiVecine;
+	}
+
+	void setLuni(int luniNoi)
+	{
+		this->luni = luniNoi;
+	}
+
+	void setTemperaturaMedieLunara(int luniNoi, float* temp)
+	{
+		if (luni >0)
+		{
+			this->luni = luniNoi;
+			if (this->temperaturaMedieLunara != NULL)
+			{
+				delete[]this->temperaturaMedieLunara;
+			}
+			this->temperaturaMedieLunara = new float[luniNoi];
+			for (int i = 0; i < luniNoi; i++)
+			{
+				this->temperaturaMedieLunara[i] = temp[i];
+			}
+		}
+	}
+
+}
+
 class Emisfera
 {
 private:
@@ -833,8 +1056,6 @@ public:
 		{
 			f.write((char*)&this->tipEmisfera[i], sizeof(char));
 		}
-		//f.write((char*)&tari, sizeof(Tara)); GASESTE O METODA DE A SCRIE UN VECTOR DE OBIECTE INTR-UN FISIER BINAR
-		//TREBUIE SCRIS CEVA SI IN MAIN?
 	}
 };
 
@@ -936,5 +1157,24 @@ int main()
 		for (int j = 0; j < 2; j++)
 			cout << pp_tara[i][j];
 
+
+	TaraPeninsulara ta;
+	TaraPeninsulara tp("Italia", 7, 20, 302068, 4);
+	ta = tp;
+	cout << ta.getTariVecine() << endl;
+	cout << ta.getTemperaturaMedieLunara() << endl;
+	cout << ta.getTemperatura(3) << endl;
+	cout << ta.getLuni << endl;
+
+	float* temperaturi;
+	temperaturi = new float[3];
+	temperaturi[0] = 2.5;
+	temperaturi[1] = 3.1;
+	temperaturi[2] = 0;
+
+	ta.setLuni(4);
+	ta.setNrJudete(15);
+	ta.setTemperaturaMedieLunara(3, temperaturi);
+	
 
 }
